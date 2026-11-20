@@ -68,6 +68,10 @@ export function toAppError(err: unknown): AppError {
   const e = (err ?? {}) as PgLike;
   const msg = e.message ?? String(err);
 
+  // supabase-js envuelve los fallos de red como { message: "TypeError: Failed to fetch", status: 0 }
+  if (/Failed to fetch|NetworkError|Load failed|network error/i.test(msg) || (e.status === 0 && !e.code)) {
+    return appError("sin_conexion", undefined, err);
+  }
   if (/EDICION_CERRADA/.test(msg)) return appError("edicion_cerrada", msg.split(":").slice(1).join(":").trim() || undefined, err);
   if (/NO_AUTORIZADO/.test(msg)) return appError("no_autorizado", undefined, err);
   if (/PLANILLA_NO_ENCONTRADA/.test(msg)) return appError("no_encontrado", "La planilla ya fue revisada o no existe.", err);

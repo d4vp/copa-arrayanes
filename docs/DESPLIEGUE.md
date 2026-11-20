@@ -47,6 +47,12 @@ Supabase  ──  PostgreSQL + RLS · Auth · Realtime · Storage · Edge Functi
 
 ## 3. Cloudflare Pages (publicar la app)
 
+> **Así quedó configurado (carga directa con Wrangler).** Para publicar una versión nueva, desde tu equipo y con `.env.local` completo:
+> ```bash
+> npm run deploy
+> ```
+> Cloudflare no permite convertir un proyecto de carga directa en uno conectado a Git. Si más adelante quieres despliegue automático con cada `git push`, crea otro proyecto conectado a GitHub con estos pasos.
+
 1. Cuenta en <https://dash.cloudflare.com> → **Workers & Pages → Create → Pages → Connect to Git** → elige el repositorio.
 2. Configuración de compilación:
    | Campo | Valor |

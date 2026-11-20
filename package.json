@@ -11,7 +11,8 @@
     "test": "vitest run",
     "icons": "node scripts/icons.mjs",
     "vapid": "node scripts/vapid.mjs",
-    "check": "npm run typecheck && npm run lint && npm test && npm run build"
+    "check": "npm run typecheck && npm run lint && npm test && npm run build",
+    "deploy": "next build && wrangler pages deploy out --project-name copa-arrayanes --branch main"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.4",
@@ -34,7 +35,8 @@
     "sharp": "^0.33.5",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "^3.0.9"
+    "vitest": "^3.0.9",
+    "wrangler": "^3.114.0"
   },
   "engines": {
     "node": ">=20"
