@@ -4,6 +4,7 @@ import { RotateCw, SearchX, Star, TriangleAlert } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useFavorites } from "@/lib/favorites";
 import { toAppError } from "@/lib/errors";
+import { SportsLoader } from "./sports";
 
 export function PageHeader({ title, subtitle, action }: { title: string; subtitle?: ReactNode; action?: ReactNode }) {
   return (
@@ -57,7 +58,12 @@ export function Skeleton({ className = "h-16" }: { className?: string }) {
 }
 
 export function ListSkeleton({ rows = 4 }: { rows?: number }) {
-  return <div className="space-y-2" aria-busy="true" aria-label="Cargando">{Array.from({ length: rows }, (_, i) => <Skeleton key={i} />)}</div>;
+  return (
+    <div aria-busy="true" aria-label="Cargando">
+      <SportsLoader compact />
+      <div className="space-y-2 opacity-60">{Array.from({ length: Math.min(rows, 3) }, (_, i) => <Skeleton key={i} />)}</div>
+    </div>
+  );
 }
 
 /** Estrella de favorito: se rellena al marcar, con micro-animación. */

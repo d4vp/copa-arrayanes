@@ -39,6 +39,7 @@ beforeAll(async () => {
   const sql = readFileSync(join(__dirname, "../migrations/20261119000001_schema.sql"), "utf8");
   await db.exec(sql);
   await db.exec(readFileSync(join(__dirname, "../migrations/20261120000004_asistente.sql"), "utf8"));
+  await db.exec(readFileSync(join(__dirname, "../migrations/20261121000005_gol_en_vivo.sql"), "utf8"));
   await db.exec(`
     grant usage on schema public to anon, authenticated;
     grant all on all tables in schema public to anon, authenticated;
@@ -141,5 +142,15 @@ describe("esquema y RLS", () => {
     expect((await as("org", "select * from ai_requests")).rows).toHaveLength(0);
     expect((await as("admin", "select * from ai_requests")).rows).toHaveLength(1);
     await expect(as("plan", `insert into ai_requests (user_id, kind, model) values ('${ids.plan}', 'foto', 'x')`)).rejects.toThrow();
+  });
+
+  it("en vivo: encola inicio y cada gol", async () => {
+    const id = ((await as("org", `insert into matches (category_id, stage, home_team_id, away_team_id) values ($1,'liga',$2,$3) returning id`, [catId, teamA, teamB])).rows[0] as { id: string }).id;
+    await as("org", "update matches set status='en_juego', home_score=0, away_score=0 where id=$1", [id]);
+    await as("org", "update matches set away_score=1 where id=$1", [id]);
+    const q = await db.query<{ kind: string; title: string; body: string }>("select kind, title, body from notification_queue where url = $1 order by id", [`/partido?id=${id}`]);
+    expect(q.rows.map((r) => r.kind)).toEqual(["inicio", "gol"]);
+    expect(q.rows[1].title).toContain("Cóndores");
+    expect(q.rows[1].body).toBe("Halcones 0 - 1 Cóndores");
   });
 });

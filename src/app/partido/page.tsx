@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { Crest } from "@/components/crest";
 import { EventIcon } from "@/components/event-icon";
+import { LivePitch } from "@/components/sports";
 import { usePublic } from "@/components/public-hooks";
 import { useToast } from "@/components/toast";
 import { Badge, EmptyState, FavoriteButton, ListSkeleton } from "@/components/ui";
@@ -76,6 +77,7 @@ function Partido() {
             </div>
           </div>
         </div>
+        {m.status === "en_juego" && <div className="px-3 pb-3"><LivePitch home={home} away={away} /></div>}
         {events.length > 0 && (
           <div className="grid grid-cols-2 gap-4 border-t border-[var(--border)] px-4 py-3 text-sm">
             {[m.home_team_id, m.away_team_id].map((tid, i) => (

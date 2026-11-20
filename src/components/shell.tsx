@@ -8,6 +8,7 @@ import { useStore } from "@/lib/data/store";
 import { timeAgo } from "@/lib/format";
 import { LogoMark, Logo } from "./brand";
 import { useToast } from "./toast";
+import { GoalWatcher, RunningKid } from "./sports";
 
 const NAV = [
   { href: "/", label: "Inicio", icon: Home },
@@ -70,6 +71,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </ul>
       </nav>
       <Welcome />
+      <GoalWatcher />
     </>
   );
 }
@@ -161,9 +163,10 @@ function Welcome() {
     <div role="dialog" aria-modal="true" aria-labelledby="bienvenida-titulo" className="fixed inset-0 z-50 grid place-items-center bg-gradient-to-b from-[#1e3a8a] to-[#1d4ed8] p-6 text-white">
       <button onClick={close} aria-label="Cerrar bienvenida" className="absolute right-4 top-[calc(1rem+env(safe-area-inset-top))] rounded-full p-2 hover:bg-white/10"><X className="size-6" /></button>
       <div className="fade-up flex max-w-sm flex-col items-center text-center">
-        <LogoMark className="size-28 drop-shadow-xl" />
+        <LogoMark className="size-24 drop-shadow-xl" />
         <h1 id="bienvenida-titulo" className="font-display mt-6 text-4xl font-extrabold leading-none tracking-wide">COPA<br />ARRAYANES</h1>
         <p className="mt-3 text-blue-100">Vereda Los Arrayanes · Córdoba, Nariño</p>
+        <RunningKid className="mt-4 h-24 w-40" color="#ffffff" jersey="#22c55e" />
         <ul className="mt-8 space-y-3 text-left text-sm text-blue-50">
           <li className="flex gap-3"><CalendarDays className="size-5 shrink-0 text-emerald-300" />Partidos, resultados y tabla al día.</li>
           <li className="flex gap-3"><span className="text-lg leading-none text-amber-300">★</span>Marca tu equipo o vereda como favorito.</li>

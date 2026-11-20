@@ -141,6 +141,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
   }, [backend, fetchAll]);
 
+  /**
+   * Actualización liviana para tiempo real: solo partidos y eventos (~10 % de los datos).
+   * Clave para aguantar muchos celulares mirando un partido en vivo con el plan gratuito.
+   */
+  const refreshLive = useCallback(async () => {
+    try {
+      const [matches, match_events] = await Promise.all([backend.selectAll("matches"), backend.selectAll("match_events")]);
+      setData((d) => {
+        let snap: Snapshot = { ...d, matches, match_events };
+        for (const op of outboxRef.current) snap = applyLocal(snap, op);
+        return snap;
+      });
+      setLastSync(new Date());
+    } catch { /* sin señal: la próxima actualización completa lo resuelve */ }
+  }, [backend]);
+
   const flush = useCallback(async () => {
     if (flushing.current || outboxRef.current.length === 0) return;
     flushing.current = true;
@@ -183,23 +199,25 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   // Conectividad, foco y tiempo real
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined;
+    let liveTimer: ReturnType<typeof setTimeout> | undefined;
     const debounced = () => { clearTimeout(timer); timer = setTimeout(() => void refresh(), 600); };
+    const debouncedLive = () => { clearTimeout(liveTimer); liveTimer = setTimeout(() => void refreshLive(), 400); };
     const online = () => { void flush().then(refresh); };
     const offline = () => setStatus("sin_conexion");
     const visible = () => { if (document.visibilityState === "visible") debounced(); };
     window.addEventListener("online", online);
     window.addEventListener("offline", offline);
     document.addEventListener("visibilitychange", visible);
-    const offRemote = backend.onRemoteChange(debounced);
+    const offRemote = backend.onRemoteChange(backend.mode === "supabase" ? debouncedLive : debounced);
     const offAuth = backend.onAuthChange(debounced);
     return () => {
-      clearTimeout(timer);
+      clearTimeout(timer); clearTimeout(liveTimer);
       window.removeEventListener("online", online);
       window.removeEventListener("offline", offline);
       document.removeEventListener("visibilitychange", visible);
       offRemote(); offAuth();
     };
-  }, [backend, refresh, flush]);
+  }, [backend, refresh, refreshLive, flush]);
 
   const mutate = useCallback(async (op: Op, label: string): Promise<"guardado" | "en_cola"> => {
     const enqueue = async () => {

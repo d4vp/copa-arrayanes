@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { Crest } from "@/components/crest";
 import { EventIcon } from "@/components/event-icon";
+import { LiveControls } from "@/components/live-controls";
 import { Card, Field, ScoreStepper, Steps, SubmitButton } from "@/components/form";
 import { usePublic } from "@/components/public-hooks";
 import { useToast } from "@/components/toast";
@@ -48,9 +49,13 @@ function RegistrarPartido() {
         <EmptyState title="Edición finalizada" text="El historial está protegido. Solo un administrador puede reabrir la edición." />
       ) : (
         <>
+          {isOrganizer && (m.status === "programado" || m.status === "aplazado" || m.status === "en_juego") && tab === "resultado" && (
+            <LiveControls match={m} home={teams.get(m.home_team_id ?? "")} away={teams.get(m.away_team_id ?? "")}
+              onFinish={() => document.getElementById("registro-final")?.scrollIntoView({ behavior: "smooth" })} />
+          )}
           {isOrganizer && <Segmented label="Sección" value={tab} onChange={setTab} options={[{ value: "resultado", label: "Resultado" }, { value: "programacion", label: "Fecha y lugar" }]} />}
           {tab === "resultado" || !isOrganizer
-            ? <ResultWizard match={m} isOrganizer={isOrganizer} onDone={() => router.push(isOrganizer ? "/admin" : "/admin/partidos")} />
+            ? <div id="registro-final"><ResultWizard key={`${m.home_score}-${m.away_score}`} match={m} isOrganizer={isOrganizer} onDone={() => router.push(isOrganizer ? "/admin" : "/admin/partidos")} /></div>
             : <ScheduleForm match={m} />}
         </>
       )}

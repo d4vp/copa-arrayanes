@@ -3,6 +3,7 @@
 import { ChevronLeft, ChevronRight, Megaphone, ShoppingBasket, Trophy, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Notice } from "@/lib/types";
+import { RollingBall } from "./sports";
 
 const ICON = { comunidad: Megaphone, ventas: ShoppingBasket, partido: Trophy };
 const LABEL = { comunidad: "Aviso de la comunidad", ventas: "Ventas", partido: "Información del partido" };
@@ -30,7 +31,8 @@ export function NoticeBanner({ notices }: { notices: Notice[] }) {
     try { sessionStorage.setItem("copa-avisos-ocultos", JSON.stringify(next)); } catch { /* */ }
   };
   return (
-    <aside aria-label="Avisos de la comunidad" className="card fade-up flex items-center gap-3 border-l-4 border-l-[var(--accent)] p-3">
+    <aside aria-label="Avisos de la comunidad" className="card fade-up roll-host relative flex items-center gap-3 overflow-hidden border-l-4 border-l-[var(--accent)] p-3">
+      <RollingBall key={`ball-${n.id}-${i}`} />
       <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[var(--accent-soft)] text-[var(--accent)]"><Icon className="size-5" aria-hidden /></span>
       <div key={n.id} className="fade-up min-w-0 flex-1" aria-live="polite">
         <p className="text-[0.7rem] font-semibold uppercase tracking-wide text-[var(--muted)]">{LABEL[n.kind]}</p>

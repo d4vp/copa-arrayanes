@@ -6,6 +6,7 @@ import { STAGE_LABEL } from "@/lib/domain/formats";
 import { fmtTime, MATCH_STATUS_LABEL, relativeDay } from "@/lib/format";
 import type { Category, Match, Team } from "@/lib/types";
 import { Crest } from "./crest";
+import { LiveStrip } from "./sports";
 import { Badge } from "./ui";
 
 function stageText(m: Match) {
@@ -27,7 +28,7 @@ export function MatchCard({ match: m, teams, category, highlight = false, href }
 
   return (
     <Link href={href ?? `/partido?id=${m.id}`}
-      className={`card block p-3 transition-shadow hover:shadow-md ${highlight ? "ring-2 ring-amber-400/60" : ""}`}>
+      className={`card block p-3 transition-shadow hover:shadow-md ${highlight ? "ring-2 ring-amber-400/60" : ""} ${live ? "border-rose-400/50" : ""}`}>
       <div className="mb-2 flex items-center justify-between gap-2 text-xs text-[var(--muted)]">
         <span className="truncate">{category ? `${category.name} · ` : ""}{stageText(m)}</span>
         {live ? <Badge tone="live"><span className="live-dot size-1.5 rounded-full bg-current" />En juego</Badge>
@@ -45,7 +46,8 @@ export function MatchCard({ match: m, teams, category, highlight = false, href }
         </div>
         <TeamSide team={away} bold={awayWin} right />
       </div>
-      {m.venue && !done && (
+      {live && <LiveStrip />}
+      {m.venue && !done && !live && (
         <p className="mt-2 flex items-center gap-1 text-xs text-[var(--muted)]"><MapPin className="size-3.5" aria-hidden />{m.venue}</p>
       )}
     </Link>
