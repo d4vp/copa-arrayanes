@@ -66,4 +66,4 @@ public/
 - **Sin conexión:** la app muestra los últimos datos descargados. Los cambios del organizador se guardan en el teléfono y se envían al recuperar la señal.
 - **Podio 1.° a 4.°:** se calcula desde la final y el tercer puesto, o desde la tabla. Al cerrar la edición queda guardado.
 
-Más información: [principios de UX](docs/UX.md) · [despliegue y límites gratuitos](docs/DESPLIEGUE.md).
+Publicar cambios: [docs/PUBLICAR.md](docs/PUBLICAR.md) · Más información: [principios de UX](docs/UX.md) · [despliegue y límites gratuitos](docs/DESPLIEGUE.md).
