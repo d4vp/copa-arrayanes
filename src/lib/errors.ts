@@ -108,5 +108,7 @@ export function toAppError(err: unknown): AppError {
 /** Registro discreto en consola (sin datos personales). */
 export function logError(context: string, err: unknown) {
   const e = toAppError(err);
+  // Sin señal o petición cortada al navegar: es esperado, no es un fallo de la app
+  if (e.kind === "sin_conexion") { console.warn(`[copa] ${context}: sin conexión`); return; }
   console.error(`[copa] ${context}: ${e.kind}`, e.cause ?? e);
 }
