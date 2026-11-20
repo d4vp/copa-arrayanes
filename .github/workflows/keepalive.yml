@@ -1,0 +1,17 @@
+# Evita que Supabase Free pause el proyecto por inactividad entre ediciones.
+# Requiere los secretos SUPABASE_URL y SUPABASE_ANON_KEY (Settings → Secrets → Actions).
+name: Mantener Supabase activo
+on:
+  schedule: [{ cron: "0 13 * * 1,4" }]   # lunes y jueves 8:00 a. m. Colombia
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Consulta liviana
+        env:
+          URL: ${{ secrets.SUPABASE_URL }}
+          KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$URL" ]; then echo "Sin secretos configurados"; exit 0; fi
+          curl -fsS "$URL/rest/v1/sports?select=id&limit=1" -H "apikey: $KEY" -H "Authorization: Bearer $KEY" > /dev/null
