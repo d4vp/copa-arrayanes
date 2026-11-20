@@ -160,6 +160,18 @@ body {
 .goal-text { animation: goal-text .8s ease-out .35s both; }
 .confetti { animation: confetti 1.6s ease-in both; }
 
+/* Patrocinadores: cinta lenta y continua; se detiene al tocarla */
+@keyframes sponsor-scroll { to { transform: translateX(-50%); } }
+.sponsor-track { animation: sponsor-scroll 45s linear infinite; }
+.sponsor-marquee:hover .sponsor-track, .sponsor-marquee:active .sponsor-track { animation-play-state: paused; }
+.sponsor-marquee { mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+@media (prefers-reduced-motion: reduce) {
+  .sponsor-track { animation: none; width: auto; justify-content: center; }
+  .sponsor-track > ul:first-child { flex-wrap: wrap; justify-content: center; row-gap: .75rem; }
+  .sponsor-copy { display: none; }
+  .sponsor-marquee { mask-image: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }

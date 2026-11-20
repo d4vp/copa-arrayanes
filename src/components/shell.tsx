@@ -9,6 +9,7 @@ import { timeAgo } from "@/lib/format";
 import { LogoMark, Logo } from "./brand";
 import { useToast } from "./toast";
 import { GoalWatcher, RunningKid } from "./sports";
+import { SponsorsFooter } from "./sponsors";
 
 const NAV = [
   { href: "/", label: "Inicio", icon: Home },
@@ -51,7 +52,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         <ModeBanner />
       </header>
 
-      <main id="contenido" className="mx-auto max-w-6xl px-4 pb-28 pt-4 md:pb-12">{children}</main>
+      <main id="contenido" className={`mx-auto max-w-6xl px-4 pt-4 ${isAdmin ? "pb-28 md:pb-12" : "pb-4"}`}>{children}</main>
+      {!isAdmin && <SponsorsFooter />}
 
       <nav aria-label="Principal" className="fixed inset-x-0 bottom-0 z-30 border-t border-[var(--border)] bg-[var(--surface)]/95 backdrop-blur pb-[env(safe-area-inset-bottom)] md:hidden">
         <ul className="grid grid-cols-5">
