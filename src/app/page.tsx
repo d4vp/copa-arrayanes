@@ -4,7 +4,6 @@ import Link from "next/link";
 import { ArrowRight, CalendarClock, Star, Trophy } from "lucide-react";
 import { useMemo } from "react";
 import { Crest } from "@/components/crest";
-import { SoccerBall } from "@/components/sports";
 import { MatchCard } from "@/components/match-card";
 import { NoticeBanner } from "@/components/notices";
 import { categoryShort, usePublic } from "@/components/public-hooks";
@@ -41,11 +40,10 @@ export default function HomePage() {
       <section className="fade-up relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1e3a8a] via-[#1d4ed8] to-[#2563eb] p-5 text-white shadow-lg">
         <div aria-hidden className="absolute -right-10 -top-10 size-44 rounded-full border-[18px] border-white/5" />
         <div aria-hidden className="absolute bottom-0 left-0 h-1.5 w-full bg-[#22c55e]" />
-        {/* líneas de cancha y balón rodando */}
+        {/* líneas de cancha */}
         <svg aria-hidden viewBox="0 0 200 120" className="absolute -right-6 top-1/2 h-40 -translate-y-1/2 opacity-15">
           <g stroke="#fff" strokeWidth="2" fill="none"><circle cx="100" cy="60" r="34" /><line x1="100" y1="0" x2="100" y2="120" /><circle cx="100" cy="60" r="3" fill="#fff" /></g>
         </svg>
-        <div aria-hidden className="roll-host absolute inset-x-0 bottom-1.5 h-5"><div className="hero-roll absolute bottom-0 left-0"><SoccerBall className="size-5" /></div></div>
         <Badge tone="accent">{EDITION_STATUS_LABEL[edition.status]}</Badge>
         <h1 className="font-display mt-2 text-3xl font-extrabold leading-tight md:text-4xl">{edition.name}</h1>
         <p className="mt-1 text-sm text-blue-100">

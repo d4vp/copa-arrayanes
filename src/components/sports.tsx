@@ -3,8 +3,11 @@
 /**
  * Animaciones deportivas de Copa Arrayanes.
  * Todo es SVG + CSS (sin librerías): pesa poco y respeta "reducir movimiento".
+ * Nada se repite en bucle fuera de cargas y del partido en vivo: el gol sí se celebra.
  */
-import { useEffect, useRef, useState } from "react";
+import { type MouseEvent, useEffect, useRef, useState } from "react";
+import { Volume2, VolumeX } from "lucide-react";
+import { goalSoundEnabled, playGoalSound, primeGoalSound, setGoalSoundEnabled } from "@/lib/goal-sound";
 import { useStore } from "@/lib/data/store";
 import type { Match, Team } from "@/lib/types";
 import { Crest } from "./crest";
@@ -99,17 +102,6 @@ export function SportsLoader({ compact = false }: { compact?: boolean }) {
 // Partido en vivo
 // ---------------------------------------------------------------------------
 
-/** Franja de cancha con el balón moviéndose: va debajo de las tarjetas "En juego". */
-export function LiveStrip() {
-  return (
-    <div aria-hidden className="relative mt-3 h-5 overflow-hidden rounded-full bg-[color-mix(in_oklab,var(--accent)_16%,transparent)]">
-      <div className="absolute inset-y-0 left-1/2 w-px bg-[var(--accent)] opacity-50" />
-      <div className="absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[var(--accent)] opacity-50" />
-      <div className="live-ball absolute top-0.5"><SoccerBall className="size-4" spin /></div>
-    </div>
-  );
-}
-
 /** Cancha completa con jugada animada: página del partido en vivo. */
 export function LivePitch({ home, away }: { home?: Team; away?: Team }) {
   return (
@@ -139,11 +131,6 @@ export function LivePitch({ home, away }: { home?: Team; away?: Team }) {
   );
 }
 
-/** Balón que cruza rodando (avisos). Cambia la key para repetir. */
-export function RollingBall() {
-  return <div aria-hidden className="roll-across pointer-events-none absolute bottom-0.5 left-0"><SoccerBall className="size-4" spin /></div>;
-}
-
 // ---------------------------------------------------------------------------
 // ¡GOOOL!
 // ---------------------------------------------------------------------------
@@ -155,6 +142,19 @@ const CONFETTI = Array.from({ length: 26 }, (_, i) => ({ left: (i * 37) % 100, d
 /** Celebración de gol a pantalla completa (se cierra sola). */
 export function GoalCelebration({ goal, onClose }: { goal: GoalInfo; onClose: () => void }) {
   useEffect(() => { const t = setTimeout(onClose, 4200); return () => clearTimeout(t); }, [onClose]);
+  const [sound, setSound] = useState(true);
+  useEffect(() => {
+    const on = goalSoundEnabled();
+    setSound(on);
+    if (on) playGoalSound();
+  }, []);
+  const toggleSound = (e: MouseEvent) => {
+    e.stopPropagation();
+    const next = !sound;
+    setSound(next);
+    setGoalSoundEnabled(next);
+    if (next) playGoalSound();
+  };
   const colors = [goal.team?.color_primary ?? "#1d4ed8", goal.team?.color_secondary ?? "#fff", "#22c55e", "#facc15"];
   return (
     <div role="alert" aria-live="assertive" onClick={onClose}
@@ -164,6 +164,10 @@ export function GoalCelebration({ goal, onClose }: { goal: GoalInfo; onClose: ()
           style={{ left: `${c.left}%`, background: colors[i % colors.length], animationDelay: `${c.delay}s`, animationDuration: `${c.dur}s`, rotate: `${c.rot}deg` }} />
       ))}
       <div className="goal-card relative w-full max-w-sm overflow-hidden rounded-3xl bg-gradient-to-br from-[#1e3a8a] to-[#1d4ed8] p-6 text-center text-white shadow-2xl">
+        <button type="button" onClick={toggleSound} aria-pressed={sound} aria-label={sound ? "Silenciar el sonido de gol" : "Activar el sonido de gol"}
+          className="absolute right-3 top-3 grid size-9 place-items-center rounded-full bg-white/15 text-white hover:bg-white/25">
+          {sound ? <Volume2 className="size-5" aria-hidden /> : <VolumeX className="size-5" aria-hidden />}
+        </button>
         {/* arco con red y balón entrando */}
         <svg viewBox="0 0 200 90" className="mx-auto h-24 w-full" aria-hidden>
           <g stroke="#fff" strokeOpacity=".35" strokeWidth="1">
@@ -196,6 +200,9 @@ export function GoalWatcher() {
   const { data, ready } = useStore();
   const prev = useRef<Map<string, [number, number]> | null>(null);
   const [goal, setGoal] = useState<GoalInfo | null>(null);
+
+  // El navegador solo deja sonar audio después del primer toque en la página.
+  useEffect(() => primeGoalSound(), []);
 
   useEffect(() => {
     if (!ready) return;

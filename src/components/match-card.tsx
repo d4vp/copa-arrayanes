@@ -6,7 +6,6 @@ import { STAGE_LABEL } from "@/lib/domain/formats";
 import { fmtTime, MATCH_STATUS_LABEL, relativeDay } from "@/lib/format";
 import type { Category, Match, Team } from "@/lib/types";
 import { Crest } from "./crest";
-import { LiveStrip } from "./sports";
 import { Badge } from "./ui";
 
 function stageText(m: Match) {
@@ -46,7 +45,6 @@ export function MatchCard({ match: m, teams, category, highlight = false, href }
         </div>
         <TeamSide team={away} bold={awayWin} right />
       </div>
-      {live && <LiveStrip />}
       {m.venue && !done && !live && (
         <p className="mt-2 flex items-center gap-1 text-xs text-[var(--muted)]"><MapPin className="size-3.5" aria-hidden />{m.venue}</p>
       )}

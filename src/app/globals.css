@@ -135,9 +135,7 @@ body {
 .ball-dribble { animation: dribble .5s ease-in-out infinite; }
 .shadow-pulse { animation: shadow-pulse .5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 
-/* Partido en vivo */
-@keyframes live-ball { 0% { left: 4%; } 45% { left: 70%; } 55% { left: 66%; } 100% { left: 4%; } }
-.live-ball { animation: live-ball 4.5s ease-in-out infinite; }
+/* Partido en vivo (cancha de la página del partido) */
 @keyframes pitch-ball {
   0% { transform: translate(150px,70px); } 15% { transform: translate(110px,40px); } 30% { transform: translate(200px,46px); }
   45% { transform: translate(232px,72px); } 55% { transform: translate(286px,68px); } 65% { transform: translate(185px,100px); }
@@ -147,15 +145,6 @@ body {
 @keyframes drift { 0%,100% { transform: translate(0,0); } 33% { transform: translate(8px,-6px); } 66% { transform: translate(-6px,5px); } }
 .player-drift { animation: drift 3.2s ease-in-out infinite; transform-box: fill-box; }
 .player-drift.d1 { animation-duration: 3.8s; } .player-drift.d2 { animation-duration: 2.7s; } .player-drift.d3 { animation-duration: 4.2s; }
-
-/* Balón que cruza los avisos */
-@keyframes roll-across { 0% { transform: translateX(-24px); opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } 100% { transform: translateX(calc(100cqw + 8px)); opacity: 0; } }
-.roll-host { container-type: inline-size; }
-.roll-across { animation: roll-across 2.2s cubic-bezier(.25,.8,.35,1) both; }
-
-/* Héroe: balón rodando sobre la línea verde */
-@keyframes hero-roll { 0% { transform: translateX(-30px) rotate(0); } 100% { transform: translateX(calc(100cqw + 30px)) rotate(720deg); } }
-.hero-roll { animation: hero-roll 7s linear infinite; }
 
 /* ¡GOOOL! */
 @keyframes goal-backdrop { from { opacity: 0; } to { opacity: 1; } }
